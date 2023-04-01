@@ -6,17 +6,17 @@ import (
 	"time"
 )
 
-type implementation struct {
+type Implementation struct {
 	workerID model.WorkerID
 }
 
-func New(workerID model.WorkerID) *implementation {
-	return &implementation{
+func New(workerID model.WorkerID) *Implementation {
+	return &Implementation{
 		workerID: workerID,
 	}
 }
 
-func (i *implementation) Process(order model.Order) (model.Order, error) {
+func (i *Implementation) Process(order model.Order) (model.Order, error) {
 	// Воркер берет заказ для обработки
 	order.WorkerID = i.workerID
 
@@ -33,7 +33,7 @@ func (i *implementation) Process(order model.Order) (model.Order, error) {
 	return order, nil
 }
 
-func (i *implementation) Pipeline(ctx context.Context, orders <-chan model.PipelineOrder) <-chan model.PipelineOrder {
+func (i *Implementation) Pipeline(ctx context.Context, orders <-chan model.PipelineOrder) <-chan model.PipelineOrder {
 	outCh := make(chan model.PipelineOrder)
 	go func() {
 		defer close(outCh)

@@ -6,14 +6,14 @@ import (
 	"time"
 )
 
-type implementation struct {
+type Implementation struct {
 }
 
-func New() *implementation {
-	return &implementation{}
+func New() *Implementation {
+	return &Implementation{}
 }
 
-func (i *implementation) Complete(order model.Order) (model.Order, error) {
+func (i *Implementation) Complete(order model.Order) (model.Order, error) {
 	// Процесс определения пвз
 	time.Sleep(time.Second)
 
@@ -26,7 +26,7 @@ func (i *implementation) Complete(order model.Order) (model.Order, error) {
 	return order, nil
 }
 
-func (i *implementation) Pipeline(ctx context.Context, orders <-chan model.PipelineOrder) <-chan model.PipelineOrder {
+func (i *Implementation) Pipeline(ctx context.Context, orders <-chan model.PipelineOrder) <-chan model.PipelineOrder {
 	outCh := make(chan model.PipelineOrder)
 	go func() {
 		defer close(outCh)
