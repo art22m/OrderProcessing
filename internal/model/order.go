@@ -10,15 +10,24 @@ const (
 	OrderStateCompleted = OrderState("Completed") // Заказ выполнен
 )
 
+type OrderID uint64
+
 type Order struct {
-	GoodsID         uint64
-	WarehouseID     uint64
-	DeliveryPointID uint64
-	WorkerID        uint64
-	Tracking        []OrderState
+	ID              OrderID
+	GoodsID         GoodsID
+	WarehouseID     WarehouseID
+	DeliveryPointID DeliveryPointID
+	WorkerID        WorkerID
+	Tracking        []OrderTracking
 }
 
 type OrderTracking struct {
 	State OrderState
 	Time  time.Time
+}
+
+type PipelineOrder struct {
+	Order   Order
+	GoodsID GoodsID
+	Err     error
 }
