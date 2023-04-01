@@ -1,9 +1,10 @@
 package producer
 
 import (
+	"math/rand"
+
 	"hw4/internal/config"
 	"hw4/internal/model"
-	"math/rand"
 )
 
 func Orders() <-chan model.GoodsID {

@@ -2,6 +2,7 @@ package generator
 
 import (
 	"context"
+
 	"hw4/internal/model"
 )
 
