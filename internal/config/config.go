@@ -1,5 +1,6 @@
 package config
 
 const (
-	GoodsNumber int = 5
+	OrdersNumber  int = 5
+	WorkersNumber int = 3
 )

@@ -16,11 +16,12 @@ func New(ids <-chan model.OrderID) *Implementation {
 	}
 }
 
-func (i *Implementation) Create(goodsID model.GoodsID) (model.Order, error) {
+func (i *Implementation) Create(workerID model.WorkerID, goodsID model.GoodsID) (model.Order, error) {
 	orderID := <-i.ids
 	order := model.Order{
-		ID:      orderID,
-		GoodsID: goodsID,
+		ID:       orderID,
+		GoodsID:  goodsID,
+		WorkerID: workerID,
 		Tracking: []model.OrderTracking{{
 			State: model.OrderStateCreated,
 			Time:  time.Now().UTC(),
@@ -30,12 +31,12 @@ func (i *Implementation) Create(goodsID model.GoodsID) (model.Order, error) {
 	return order, nil
 }
 
-func (i *Implementation) Pipeline(ctx context.Context, goodsIDCh <-chan model.GoodsID) <-chan model.PipelineOrder {
+func (i *Implementation) Pipeline(ctx context.Context, workerID model.WorkerID, goodsIDCh <-chan model.GoodsID) <-chan model.PipelineOrder {
 	outCh := make(chan model.PipelineOrder)
 	go func() {
 		defer close(outCh)
 		for goodsID := range goodsIDCh {
-			order, err := i.Create(goodsID)
+			order, err := i.Create(workerID, goodsID)
 			select {
 			case <-ctx.Done():
 				return

@@ -3,14 +3,16 @@ package main
 import (
 	"context"
 	"fmt"
+	"hw4/internal/model"
+	"log"
+	"time"
+
 	"hw4/internal/service/gateway"
 	completestep "hw4/internal/service/gateway/complete"
 	createstep "hw4/internal/service/gateway/create"
 	processstep "hw4/internal/service/gateway/process"
 	"hw4/internal/service/generator"
 	"hw4/internal/service/producer"
-	"log"
-	"time"
 )
 
 func main() {
@@ -24,11 +26,13 @@ func main() {
 	complete := completestep.New()
 
 	server := gateway.New(create, process, complete)
-
 	orders := producer.Orders()
+
 	start := time.Now().UTC()
+
+	var workerID model.WorkerID = 1
 	for goodsID := range orders {
-		if err := server.Process(goodsID); err != nil {
+		if err := server.Process(workerID, goodsID); err != nil {
 			log.Fatal(err)
 		}
 	}

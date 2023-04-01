@@ -1,6 +1,9 @@
 package gateway
 
 import (
+	"bytes"
+	"encoding/json"
+	"fmt"
 	"hw4/internal/model"
 	completestep "hw4/internal/service/gateway/complete"
 	createstep "hw4/internal/service/gateway/create"
@@ -21,8 +24,8 @@ func New(create *createstep.Implementation, process *processstep.Implementation,
 	}
 }
 
-func (i *implementation) Process(goodsID model.GoodsID) error {
-	orderCreated, err := i.create.Create(goodsID)
+func (i *implementation) Process(workerID model.WorkerID, goodsID model.GoodsID) error {
+	orderCreated, err := i.create.Create(workerID, goodsID)
 	if err != nil {
 		return err
 	}
@@ -32,9 +35,30 @@ func (i *implementation) Process(goodsID model.GoodsID) error {
 		return err
 	}
 
-	if _, err = i.complete.Complete(orderProcessed); err != nil {
+	orderCompleted, err := i.complete.Complete(orderProcessed)
+	if err != nil {
 		return err
 	}
 
+	resStr, err := prettyString(orderCompleted)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println(resStr)
+
 	return nil
+}
+
+func prettyString(order model.Order) (string, error) {
+	str, err := json.Marshal(order)
+	if err != nil {
+		return "", nil
+	}
+
+	var prettyJSON bytes.Buffer
+	if err := json.Indent(&prettyJSON, []byte(str), "", "    "); err != nil {
+		return "", err
+	}
+	return prettyJSON.String(), nil
 }

@@ -7,12 +7,12 @@ import (
 )
 
 func Orders() <-chan model.GoodsID {
-	result := make(chan model.GoodsID, config.GoodsNumber)
+	result := make(chan model.GoodsID, config.OrdersNumber)
 	go func() {
 		defer close(result)
 
-		for i := 0; i < config.GoodsNumber; i++ {
-			result <- model.GoodsID(rand.Int())
+		for i := 0; i < config.OrdersNumber; i++ {
+			result <- model.GoodsID(rand.Intn(100))
 		}
 	}()
 
