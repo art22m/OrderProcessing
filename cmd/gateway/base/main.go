@@ -19,14 +19,19 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
+	// Id generator
 	ids := generator.OrderIDs(ctx)
 
+	// Operations
 	create := createstep.New(ids)
 	process := processstep.New()
 	complete := completestep.New()
 
-	server := gateway.New(create, process, complete)
+	// Order to process
 	orders := producer.Orders()
+
+	// Server
+	server := gateway.New(create, process, complete)
 
 	start := time.Now().UTC()
 
