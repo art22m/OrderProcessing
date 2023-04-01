@@ -16,7 +16,7 @@ func New(ids <-chan model.OrderID) *implementation {
 	}
 }
 
-func (i *implementation) Create(ctx context.Context, goodsID model.GoodsID) (model.Order, error) {
+func (i *implementation) Create(goodsID model.GoodsID) (model.Order, error) {
 	orderID := <-i.ids
 	order := model.Order{
 		ID:      orderID,
@@ -35,7 +35,7 @@ func (i *implementation) Pipeline(ctx context.Context, goodsIDCh <-chan model.Go
 	go func() {
 		defer close(outCh)
 		for goodsID := range goodsIDCh {
-			order, err := i.Create(ctx, goodsID)
+			order, err := i.Create(goodsID)
 			select {
 			case <-ctx.Done():
 				return
