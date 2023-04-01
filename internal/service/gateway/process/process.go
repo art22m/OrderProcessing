@@ -7,23 +7,16 @@ import (
 )
 
 type Implementation struct {
-	workerID model.WorkerID
 }
 
-func New(workerID model.WorkerID) *Implementation {
-	return &Implementation{
-		workerID: workerID,
-	}
+func New() *Implementation {
+	return &Implementation{}
 }
 
 func (i *Implementation) Process(order model.Order) (model.Order, error) {
-	// Воркер берет заказ для обработки
-	order.WorkerID = i.workerID
-
-	// Обрабатывает
+	// Обработка
 	time.Sleep(3 * time.Second)
 
-	// Отсортировал на склад
 	order.WarehouseID = model.WarehouseID(order.GoodsID % 2)
 	order.Tracking = append(order.Tracking, model.OrderTracking{
 		State: model.OrderStateProcessed,
