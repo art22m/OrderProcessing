@@ -27,8 +27,8 @@ func New(create *createstep.Implementation, process *processstep.Implementation,
 	}
 }
 
-func (i *Implementation) Process(workerID model.WorkerID, goodsID model.GoodsID) error {
-	orderCreated, err := i.create.Create(workerID, goodsID)
+func (i *Implementation) Process(workerID model.WorkerID, order model.Order) error {
+	orderCreated, err := i.create.Create(workerID, order)
 	if err != nil {
 		return err
 	}
@@ -53,14 +53,14 @@ func (i *Implementation) Process(workerID model.WorkerID, goodsID model.GoodsID)
 	return nil
 }
 
-func (i *Implementation) Pipeline(ctx context.Context, workerID model.WorkerID, goodsIDCh <-chan model.GoodsID) {
-	createCh := i.create.Pipeline(ctx, workerID, goodsIDCh)
+func (i *Implementation) Pipeline(ctx context.Context, workerID model.WorkerID, orders <-chan model.Order) {
+	createCh := i.create.Pipeline(ctx, workerID, orders)
 	processCh := i.process.Pipeline(ctx, createCh)
 	completeCh := i.complete.Pipeline(ctx, processCh)
 
 	for order := range completeCh {
 		if order.Err != nil {
-			log.Printf("Error while processing order for goodsID: [%d], err: [%v]", order.GoodsID, order.Err)
+			log.Printf("Error while processing order with ID: [%d], err: [%v]", order.Order.ID, order.Err)
 			continue
 		}
 

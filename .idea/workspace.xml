@@ -5,15 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7d6195cc-a68a-4a35-a383-1c189bb271a8" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/homework-4.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/homework-4.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmd/gateway/base/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/gateway/base/main.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmd/gateway/worker_pool_pipeline/worker_pool_pipeline.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/gateway/worker_pool_pipeline/worker_pool_pipeline.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/model/order.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/model/order.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/service/gateway/complete/complete.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/service/gateway/complete/complete.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/service/gateway/create/create.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/service/gateway/create/create.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/service/gateway/gateway.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/service/gateway/gateway.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/service/gateway/process/process.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/service/gateway/process/process.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/service/generator/generator.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/service/generator/generator.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/service/generator/generator.go" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/service/producer/producer.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/service/producer/producer.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -46,7 +46,7 @@
     &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;
   }
 }</component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Go Build.go build hw4/cmd/gateway/base">
     <configuration default="true" type="GoApplicationRunConfiguration" factoryName="Go Application">
       <module name="homework-4" />
       <working_directory value="$PROJECT_DIR$" />
@@ -64,6 +64,15 @@
       <filePath value="$PROJECT_DIR$/cmd/gateway/base/main.go" />
       <method v="2" />
     </configuration>
+    <configuration name="go build hw4/cmd/gateway/worker_pool_pipeline" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="homework-4" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="hw4/cmd/gateway/worker_pool_pipeline" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$/cmd/gateway/worker_pool_pipeline/worker_pool_pipeline.go" />
+      <method v="2" />
+    </configuration>
     <configuration default="true" type="GoTestRunConfiguration" factoryName="Go Test">
       <module name="homework-4" />
       <working_directory value="$PROJECT_DIR$" />
@@ -76,6 +85,7 @@
     <recent_temporary>
       <list>
         <item itemvalue="Go Build.go build hw4/cmd/gateway/base" />
+        <item itemvalue="Go Build.go build hw4/cmd/gateway/worker_pool_pipeline" />
       </list>
     </recent_temporary>
   </component>

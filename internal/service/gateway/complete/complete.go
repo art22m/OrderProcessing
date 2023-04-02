@@ -13,10 +13,10 @@ func New() *Implementation {
 	return &Implementation{}
 }
 
-// Complete вычисляет для сущности model.Order пункт выдачи заказов и добавляет финальный стейт в model.Order.Tracking
+// Complete вычисляет ID ПВЗ для заказа и добавляет в массив состояний новое состояние "Завершен"
 func (i *Implementation) Complete(order model.Order) (model.Order, error) {
 	/* Здесь могла бы быть логика определения пункта выдачи заказов */
-	time.Sleep(time.Second)
+	time.Sleep(1 * time.Second)
 
 	order.DeliveryPointID = model.DeliveryPointID(uint64(order.GoodsID) + uint64(order.WarehouseID))
 	order.Tracking = append(order.Tracking, model.OrderTracking{

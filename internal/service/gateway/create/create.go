@@ -7,48 +7,39 @@ import (
 	"hw4/internal/model"
 )
 
-type Implementation struct {
-	ids <-chan model.OrderID
+type Implementation struct{}
+
+func New() *Implementation {
+	return &Implementation{}
 }
 
-func New(ids <-chan model.OrderID) *Implementation {
-	return &Implementation{
-		ids: ids,
-	}
-}
+// Create присваивает айди воркера к заказу и добавляет в массив состояний новое состояние "Создан"
+func (i *Implementation) Create(workerID model.WorkerID, order model.Order) (model.Order, error) {
 
-// Create принимает айди воркера и айди товара, и по ним формирует новый заказ.
-func (i *Implementation) Create(workerID model.WorkerID, goodsID model.GoodsID) (model.Order, error) {
-	orderID := <-i.ids
-	order := model.Order{
-		ID:       orderID,
-		GoodsID:  goodsID,
-		WorkerID: workerID,
-		Tracking: []model.OrderTracking{{
-			State: model.OrderStateCreated,
-			Time:  time.Now().UTC(),
-		}},
-	}
+	order.WorkerID = workerID
+	order.Tracking = append(order.Tracking, model.OrderTracking{
+		State: model.OrderStateCreated,
+		Time:  time.Now().UTC(),
+	})
 
 	return order, nil
 }
 
-// Pipeline определяет начальный шаг всего пайплайна, принимает айди воркера и канал с айдишниками товаров для обработки.
-// По айдишнику, с помощью метода Create, формируется заказ и передается в канал, который является входным в следующий пайплайн.
-func (i *Implementation) Pipeline(ctx context.Context, workerID model.WorkerID, goodsIDCh <-chan model.GoodsID) <-chan model.OrderPipeline {
+// Pipeline определяет начальный шаг всего пайплайна, принимает ID воркера и канал с заказами для обработки.
+// Применяет к ним метод Create(...). Передает заказы в выходной канал, который является входным в следующий пайплайн.
+func (i *Implementation) Pipeline(ctx context.Context, workerID model.WorkerID, orders <-chan model.Order) <-chan model.OrderPipeline {
 	outCh := make(chan model.OrderPipeline)
 	go func() {
 		defer close(outCh)
-		for goodsID := range goodsIDCh {
-			order, err := i.Create(workerID, goodsID)
+		for order := range orders {
+			orderR, err := i.Create(workerID, order)
 			select {
 			case <-ctx.Done():
 				return
 
 			case outCh <- model.OrderPipeline{
-				Order:   order,
-				GoodsID: goodsID,
-				Err:     err,
+				Order: orderR,
+				Err:   err,
 			}:
 			}
 		}

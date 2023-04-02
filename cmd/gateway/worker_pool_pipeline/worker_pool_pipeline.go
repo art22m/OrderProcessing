@@ -3,16 +3,15 @@ package main
 import (
 	"context"
 	"fmt"
-	"hw4/internal/config"
-	"hw4/internal/model"
 	"sync"
 	"time"
 
+	"hw4/internal/config"
+	"hw4/internal/model"
 	"hw4/internal/service/gateway"
 	completestep "hw4/internal/service/gateway/complete"
 	createstep "hw4/internal/service/gateway/create"
 	processstep "hw4/internal/service/gateway/process"
-	"hw4/internal/service/generator"
 	"hw4/internal/service/producer"
 )
 
@@ -20,11 +19,8 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	// Генератор айдишников заказа
-	ids := generator.OrderIDs(ctx)
-
 	// Операции над заказами
-	create := createstep.New(ids)
+	create := createstep.New()
 	process := processstep.New()
 	complete := completestep.New()
 
@@ -36,6 +32,7 @@ func main() {
 
 	start := time.Now().UTC()
 
+	// Запуск воркеров
 	var wg sync.WaitGroup
 	for i := 0; i < config.WorkersNumber; i++ {
 		wg.Add(1)
@@ -47,7 +44,7 @@ func main() {
 	fmt.Printf("Total duration %f seconds", time.Since(start).Seconds())
 }
 
-func worker(ctx context.Context, workerID model.WorkerID, wg *sync.WaitGroup, server *gateway.Implementation, orders <-chan model.GoodsID) {
+func worker(ctx context.Context, workerID model.WorkerID, wg *sync.WaitGroup, server *gateway.Implementation, orders <-chan model.Order) {
 	defer wg.Done()
 	server.Pipeline(ctx, workerID, orders)
 }

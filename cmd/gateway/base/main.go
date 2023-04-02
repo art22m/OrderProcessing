@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"hw4/internal/model"
 	"log"
@@ -11,19 +10,12 @@ import (
 	completestep "hw4/internal/service/gateway/complete"
 	createstep "hw4/internal/service/gateway/create"
 	processstep "hw4/internal/service/gateway/process"
-	"hw4/internal/service/generator"
 	"hw4/internal/service/producer"
 )
 
 func main() {
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
-	// Генератор айдишников заказа
-	ids := generator.OrderIDs(ctx)
-
 	// Операции над заказами
-	create := createstep.New(ids)
+	create := createstep.New()
 	process := processstep.New()
 	complete := completestep.New()
 
@@ -36,9 +28,9 @@ func main() {
 	start := time.Now().UTC()
 
 	// Это самая тривиальная обработка товаров, имеем одного рабочего
-	var workerID model.WorkerID = 1
-	for goodsID := range orders {
-		if err := server.Process(workerID, goodsID); err != nil {
+	var workerID model.WorkerID = 0
+	for order := range orders {
+		if err := server.Process(workerID, order); err != nil {
 			log.Fatal(err)
 		}
 	}

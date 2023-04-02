@@ -27,7 +27,6 @@ type OrderTracking struct {
 }
 
 type OrderPipeline struct {
-	Order   Order
-	GoodsID GoodsID
-	Err     error
+	Order Order
+	Err   error
 }

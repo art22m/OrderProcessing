@@ -13,10 +13,10 @@ func New() *Implementation {
 	return &Implementation{}
 }
 
-// Process вычисляет для сущности model.Order айди склада и добавляет стейт в model.Order.Tracking
+// Process вычисляет ID склада для заказа и добавляет в массив состояний новое состояние "Обработан"
 func (i *Implementation) Process(order model.Order) (model.Order, error) {
 	/* Здесь могла бы быть логика определения склада */
-	time.Sleep(3 * time.Second)
+	time.Sleep(2 * time.Second)
 
 	order.WarehouseID = model.WarehouseID(order.GoodsID % 2)
 	order.Tracking = append(order.Tracking, model.OrderTracking{
