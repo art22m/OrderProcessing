@@ -20,18 +20,18 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	// Id generator
+	// Генератор айдишников заказа
 	ids := generator.OrderIDs(ctx)
 
-	// Operations
+	// Операции над заказами
 	create := createstep.New(ids)
 	process := processstep.New()
 	complete := completestep.New()
 
-	// Orders to process
+	// Канал с заказами для обработки
 	orders := producer.Orders()
 
-	// Server
+	// Сервер для обработки заказов
 	server := gateway.New(create, process, complete)
 
 	start := time.Now().UTC()
@@ -44,7 +44,7 @@ func main() {
 
 	wg.Wait()
 
-	fmt.Printf("Total duration: %f", time.Since(start).Seconds())
+	fmt.Printf("Total duration %f seconds", time.Since(start).Seconds())
 }
 
 func worker(ctx context.Context, workerID model.WorkerID, wg *sync.WaitGroup, server *gateway.Implementation, orders <-chan model.GoodsID) {

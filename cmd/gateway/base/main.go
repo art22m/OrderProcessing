@@ -19,22 +19,23 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	// Id generator
+	// Генератор айдишников заказа
 	ids := generator.OrderIDs(ctx)
 
-	// Operations
+	// Операции над заказами
 	create := createstep.New(ids)
 	process := processstep.New()
 	complete := completestep.New()
 
-	// Order to process
+	// Канал с заказами для обработки
 	orders := producer.Orders()
 
-	// Server
+	// Сервер для обработки заказов
 	server := gateway.New(create, process, complete)
 
 	start := time.Now().UTC()
 
+	// Это самая тривиальная обработка товаров, имеем одного рабочего
 	var workerID model.WorkerID = 1
 	for goodsID := range orders {
 		if err := server.Process(workerID, goodsID); err != nil {
@@ -42,5 +43,5 @@ func main() {
 		}
 	}
 
-	fmt.Printf("Total duration: %f", time.Since(start).Seconds())
+	fmt.Printf("Total duration %f seconds", time.Since(start).Seconds())
 }

@@ -26,7 +26,7 @@ type OrderTracking struct {
 	Time  time.Time
 }
 
-type PipelineOrder struct {
+type OrderPipeline struct {
 	Order   Order
 	GoodsID GoodsID
 	Err     error

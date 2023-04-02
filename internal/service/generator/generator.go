@@ -6,6 +6,7 @@ import (
 	"hw4/internal/model"
 )
 
+// OrderIDs реализует паттерн генератор. Создаёт канал, в котором будут уникальные айдишники для заказов.
 func OrderIDs(ctx context.Context) <-chan model.OrderID {
 	result := make(chan model.OrderID)
 	go func() {

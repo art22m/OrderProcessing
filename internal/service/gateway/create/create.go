@@ -17,6 +17,7 @@ func New(ids <-chan model.OrderID) *Implementation {
 	}
 }
 
+// Create принимает айди воркера и айди товара, и по ним формирует новый заказ.
 func (i *Implementation) Create(workerID model.WorkerID, goodsID model.GoodsID) (model.Order, error) {
 	orderID := <-i.ids
 	order := model.Order{
@@ -32,8 +33,10 @@ func (i *Implementation) Create(workerID model.WorkerID, goodsID model.GoodsID) 
 	return order, nil
 }
 
-func (i *Implementation) Pipeline(ctx context.Context, workerID model.WorkerID, goodsIDCh <-chan model.GoodsID) <-chan model.PipelineOrder {
-	outCh := make(chan model.PipelineOrder)
+// Pipeline определяет начальный шаг всего пайплайна, принимает айди воркера и канал с айдишниками товаров для обработки.
+// По айдишнику, с помощью метода Create, формируется заказ и передается в канал, который является входным в следующий пайплайн.
+func (i *Implementation) Pipeline(ctx context.Context, workerID model.WorkerID, goodsIDCh <-chan model.GoodsID) <-chan model.OrderPipeline {
+	outCh := make(chan model.OrderPipeline)
 	go func() {
 		defer close(outCh)
 		for goodsID := range goodsIDCh {
@@ -42,7 +45,7 @@ func (i *Implementation) Pipeline(ctx context.Context, workerID model.WorkerID, 
 			case <-ctx.Done():
 				return
 
-			case outCh <- model.PipelineOrder{
+			case outCh <- model.OrderPipeline{
 				Order:   order,
 				GoodsID: goodsID,
 				Err:     err,

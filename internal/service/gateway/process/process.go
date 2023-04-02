@@ -7,15 +7,15 @@ import (
 	"hw4/internal/model"
 )
 
-type Implementation struct {
-}
+type Implementation struct{}
 
 func New() *Implementation {
 	return &Implementation{}
 }
 
+// Process вычисляет для сущности model.Order айди склада и добавляет стейт в model.Order.Tracking
 func (i *Implementation) Process(order model.Order) (model.Order, error) {
-	// Обработка
+	/* Здесь могла бы быть логика определения склада */
 	time.Sleep(3 * time.Second)
 
 	order.WarehouseID = model.WarehouseID(order.GoodsID % 2)
@@ -27,8 +27,10 @@ func (i *Implementation) Process(order model.Order) (model.Order, error) {
 	return order, nil
 }
 
-func (i *Implementation) Pipeline(ctx context.Context, orders <-chan model.PipelineOrder) <-chan model.PipelineOrder {
-	outCh := make(chan model.PipelineOrder)
+// Pipeline определяет промежуточный шаг нашего пайплайна, принимает заказы со стейта <create> и применяет к ним метод
+// Process(order). Передает заказы в выходной канал, который является входным в следующий пайплайн.
+func (i *Implementation) Pipeline(ctx context.Context, orders <-chan model.OrderPipeline) <-chan model.OrderPipeline {
+	outCh := make(chan model.OrderPipeline)
 	go func() {
 		defer close(outCh)
 		for order := range orders {
@@ -46,7 +48,7 @@ func (i *Implementation) Pipeline(ctx context.Context, orders <-chan model.Pipel
 			case <-ctx.Done():
 				return
 
-			case outCh <- model.PipelineOrder{
+			case outCh <- model.OrderPipeline{
 				Order: orderR,
 				Err:   err,
 			}:

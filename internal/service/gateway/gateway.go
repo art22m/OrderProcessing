@@ -5,6 +5,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
+
 	"hw4/internal/model"
 	completestep "hw4/internal/service/gateway/complete"
 	createstep "hw4/internal/service/gateway/create"
@@ -41,12 +43,12 @@ func (i *Implementation) Process(workerID model.WorkerID, goodsID model.GoodsID)
 		return err
 	}
 
-	resStr, err := prettyString(orderCompleted)
+	orderInfo, err := prettyString(orderCompleted)
 	if err != nil {
 		return err
 	}
 
-	fmt.Println(resStr)
+	fmt.Println(orderInfo)
 
 	return nil
 }
@@ -58,18 +60,22 @@ func (i *Implementation) Pipeline(ctx context.Context, workerID model.WorkerID, 
 
 	for order := range completeCh {
 		if order.Err != nil {
-			//log.Printf("error while processing order for clientID: [%d], err: [%v]", order.ClientID, order.Err)
+			log.Printf("Error while processing order for goodsID: [%d], err: [%v]", order.GoodsID, order.Err)
+			continue
 		}
 
-		resStr, _ := prettyString(order.Order)
-		//if err != nil {
-		//	return err
-		//}
+		orderInfo, err := prettyString(order.Order)
+		if err != nil {
+			log.Printf("Error pretty printing order info: [%v]", err)
+			continue
+		}
 
-		fmt.Println(resStr)
+		fmt.Println(orderInfo)
 	}
 }
 
+// prettyString принимает model.Order и возвращает json в виде строки, построенный по заказу.
+// Также добавляет табы в результирующую строку, чтобы сделать ее более читаемой.
 func prettyString(order model.Order) (string, error) {
 	str, err := json.Marshal(order)
 	if err != nil {
@@ -80,5 +86,6 @@ func prettyString(order model.Order) (string, error) {
 	if err := json.Indent(&prettyJSON, []byte(str), "", "    "); err != nil {
 		return "", err
 	}
+
 	return prettyJSON.String(), nil
 }

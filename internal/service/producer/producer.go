@@ -7,6 +7,9 @@ import (
 	"hw4/internal/model"
 )
 
+// Orders возвращает канал, в котором будут лежать айдишники товаров для обработки.
+// В текущей реализации айди товара определяется случайным образом. Количество задаётся
+// значеним из конфига.
 func Orders() <-chan model.GoodsID {
 	result := make(chan model.GoodsID, config.OrdersNumber)
 	go func() {
