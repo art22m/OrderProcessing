@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"fmt"
+	"log"
 	"sync"
 	"time"
 
@@ -41,7 +41,7 @@ func main() {
 
 	wg.Wait()
 
-	fmt.Printf("Total duration %f seconds", time.Since(start).Seconds())
+	log.Printf("Total duration %f seconds", time.Since(start).Seconds())
 }
 
 func worker(ctx context.Context, workerID model.WorkerID, wg *sync.WaitGroup, server *gateway.Implementation, orders <-chan model.Order) {

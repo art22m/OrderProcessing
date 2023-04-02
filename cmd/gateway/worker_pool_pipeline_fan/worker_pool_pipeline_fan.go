@@ -1,10 +1,13 @@
 package main
 
 import (
-	"hw4/internal/model"
+	"context"
 	"log"
+	"sync"
 	"time"
 
+	"hw4/internal/config"
+	"hw4/internal/model"
 	"hw4/internal/service/gateway"
 	completestep "hw4/internal/service/gateway/complete"
 	createstep "hw4/internal/service/gateway/create"
@@ -13,6 +16,9 @@ import (
 )
 
 func main() {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
 	// Операции над заказами
 	create := createstep.New()
 	process := processstep.New()
@@ -26,13 +32,19 @@ func main() {
 
 	start := time.Now().UTC()
 
-	// Это самая тривиальная обработка товаров, имеем одного рабочего
-	var workerID model.WorkerID = 0
-	for order := range orders {
-		if err := server.Process(workerID, order); err != nil {
-			log.Fatal(err)
-		}
+	// Запуск воркеров
+	var wg sync.WaitGroup
+	for i := 0; i < config.WorkersNumber; i++ {
+		wg.Add(1)
+		go worker(ctx, model.WorkerID(i), &wg, server, orders)
 	}
 
+	wg.Wait()
+
 	log.Printf("Total duration %f seconds", time.Since(start).Seconds())
+}
+
+func worker(ctx context.Context, workerID model.WorkerID, wg *sync.WaitGroup, server *gateway.Implementation, orders <-chan model.Order) {
+	defer wg.Done()
+	server.PipelineFan(ctx, workerID, orders)
 }
