@@ -1,10 +1,10 @@
 package main
 
 import (
-	"hw4/internal/model"
 	"log"
 	"time"
 
+	"hw4/internal/model"
 	"hw4/internal/service/gateway"
 	completestep "hw4/internal/service/gateway/complete"
 	createstep "hw4/internal/service/gateway/create"
